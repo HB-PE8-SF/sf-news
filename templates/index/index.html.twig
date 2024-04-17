@@ -1,18 +1,28 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}
-  Hello IndexController!
+  {{ parent() }} - Derniers articles
 {% endblock %}
 
-{% block body %}
+{% block content %}
   <div class="example-wrapper">
     <h1>{{ welcome_text }} ✅</h1>
+
+    <p>{{ students|length }} étudiants</p>
+
+    <div>{{ students|join(', ') }}</div>
 
     <div>
       {% for student in students %}
         <p>{{ student }}</p>
       {% else %}
         <p>Aucun étudiant trouvé</p>
+      {% endfor %}
+    </div>
+
+    <div>
+      {% for studentObj in studentsObj %}
+        <p>{{ studentObj.name }}</p>
       {% endfor %}
     </div>
 

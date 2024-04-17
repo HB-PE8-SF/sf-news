@@ -9,4 +9,9 @@ class Student
         private int $number
     ) {
     }
+
+    public function getName(): string
+    {
+        return $this->name;
+    }
 }
