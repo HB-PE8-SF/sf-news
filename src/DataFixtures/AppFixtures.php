@@ -3,9 +3,11 @@
 namespace App\DataFixtures;
 
 use App\Entity\Article;
+use App\Entity\Category;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 use Faker\Factory;
+use Faker\ORM\Doctrine\Populator;
 
 class AppFixtures extends Fixture
 {
@@ -15,17 +17,11 @@ class AppFixtures extends Fixture
     {
         $faker = Factory::create('fr_FR');
 
-        for ($i = 0; $i < self::NB_ARTICLES; $i++) {
-            $article = new Article();
-            $article
-                ->setTitle($faker->realText(50))
-                ->setContent($faker->realTextBetween(500, 700))
-                ->setVisible($faker->boolean(80))
-                ->setCreatedAt($faker->dateTimeBetween('-2 years'));
-
-            $manager->persist($article);
-        }
-
-        $manager->flush();
+        $populator = new Populator($faker, $manager);
+        $populator->addEntity(Category::class, 10, [
+            'name' => function () use ($faker) { return $faker->word(); }
+        ]);
+        $populator->addEntity(Article::class, 50);
+        $populator->execute();
     }
 }
