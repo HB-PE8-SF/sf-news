@@ -6,19 +6,27 @@ use App\Entity\Article;
 use DateTime;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
+use Faker\Factory;
 
 class AppFixtures extends Fixture
 {
+    private const NB_ARTICLES = 50;
+
     public function load(ObjectManager $manager): void
     {
-        $article = new Article();
-        $article
-            ->setTitle("La révélation de Nabil")
-            ->setContent("highway anywhere best whenever explore tobacco forest driving square labor realize individual wheel ago involved beneath problem tent invented ball swept roof raw pencil")
-            ->setVisible(true)
-            ->setCreatedAt(new DateTime());
+        $faker = Factory::create('fr_FR');
 
-        $manager->persist($article);
+        for ($i = 0; $i < self::NB_ARTICLES; $i++) {
+            $article = new Article();
+            $article
+                ->setTitle($faker->realText(50))
+                ->setContent($faker->realTextBetween(500, 700))
+                ->setVisible($faker->boolean(80))
+                ->setCreatedAt($faker->dateTimeBetween('-2 years'));
+
+            $manager->persist($article);
+        }
+
         $manager->flush();
     }
 }
