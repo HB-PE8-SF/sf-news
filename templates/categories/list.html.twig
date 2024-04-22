@@ -9,7 +9,9 @@
 
   <div>
     {% for category in categories %}
-      <p>{{ category.name }} ({{ category.articles|length }} articles)</p>
+      <p>
+        <a href="{{ path('app_category_item', { id: category.id }) }}">{{ category.name }}</a> ({{ category.articles|length }} articles)
+      </p>
     {% endfor %}
   </div>
 {% endblock %}

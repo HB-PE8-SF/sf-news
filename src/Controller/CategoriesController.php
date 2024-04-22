@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Category;
 use App\Repository\CategoryRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -22,18 +23,8 @@ class CategoriesController extends AbstractController
     }
 
     #[Route('/categories/{id}', name: 'app_category_item')]
-    // J'injecte le CategoryRepository (type-hint)
-    // car c'est le service qui me permet de communiquer avec la base de données
-    // à propos des catégories
-    public function item(CategoryRepository $categoryRepository, int $id): Response
+    public function item(Category $category): Response
     {
-        // Puis je demande à la BDD la catégorie qui a cet ID
-        $category = $categoryRepository->find($id);
-
-        if ($category === null) {
-            throw new NotFoundHttpException('Catégorie non trouvée');
-        }
-
         return $this->render('categories/item.html.twig', [
             'category' => $category
         ]);
