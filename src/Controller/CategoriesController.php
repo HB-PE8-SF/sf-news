@@ -21,14 +21,12 @@ class CategoriesController extends AbstractController
         ]);
     }
 
-    #[Route('/category', name: 'app_category_item')]
+    #[Route('/categories/{id}', name: 'app_category_item')]
     // J'injecte le CategoryRepository (type-hint)
     // car c'est le service qui me permet de communiquer avec la base de données
     // à propos des catégories
-    public function item(CategoryRepository $categoryRepository, Request $request): Response
+    public function item(CategoryRepository $categoryRepository, int $id): Response
     {
-        // Je récupère le paramètre GET 'id' (donc de l'URL)
-        $id = $request->query->getInt('id');
         // Puis je demande à la BDD la catégorie qui a cet ID
         $category = $categoryRepository->find($id);
 
