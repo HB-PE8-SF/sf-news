@@ -24,7 +24,12 @@ class NewsletterController extends AbstractController
             $em->persist($newsletterEmail);
             $em->flush();
 
-            return $this->redirectToRoute('app_newsletter_confirm');
+            $this->addFlash('success', 'Merci, votre email a bien été enregistré');
+            return $this->redirectToRoute('app_homepage');
+        }
+
+        if ($form->isSubmitted() && !$form->isValid()) {
+            $this->addFlash('error', "Une erreur est survenue pendant le traitement du formulaire, en plus Nabil m'oblige à écrire ce message, merci de consulter ci-dessous le détail des erreurs, bien qu'elles soient décrites en détail auprès des champs de formulaire concernés");
         }
 
         return $this->render('newsletter/subscribe.html.twig', [
