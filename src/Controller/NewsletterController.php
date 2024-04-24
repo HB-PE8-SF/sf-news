@@ -4,19 +4,21 @@ namespace App\Controller;
 
 use App\Entity\NewsletterEmail;
 use App\Form\NewsletterType;
+use App\Mail\NewsletterService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Mailer\MailerInterface;
-use Symfony\Component\Mime\Email;
 use Symfony\Component\Routing\Attribute\Route;
 
 class NewsletterController extends AbstractController
 {
     #[Route('/newsletter/subscribe', name: 'app_newsletter_subscribe')]
-    public function subscribe(Request $request, EntityManagerInterface $em, MailerInterface $mailer): Response
-    {
+    public function subscribe(
+        Request $request,
+        EntityManagerInterface $em,
+        NewsletterService $newsletterService
+    ): Response {
         $newsletterEmail = new NewsletterEmail();
         $form = $this->createForm(NewsletterType::class, $newsletterEmail);
 
@@ -26,14 +28,7 @@ class NewsletterController extends AbstractController
             $em->persist($newsletterEmail);
             $em->flush();
 
-            $email = (new Email())
-            ->from('admin@hb-corp.com')
-            ->to($newsletterEmail->getEmail())
-            ->subject('HB Corp - Inscription à la newsletter')
-            ->text('Votre inscription a bien été enregistrée')
-            ->html('<p>Votre adresse ' . $newsletterEmail->getEmail() . ' a bien été enregistrée</p>');
-
-            $mailer->send($email);
+            $newsletterService->sendConfirmation($newsletterEmail);
 
             $this->addFlash('success', 'Merci, votre email a bien été enregistré');
             return $this->redirectToRoute('app_homepage');
