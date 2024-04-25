@@ -9,14 +9,15 @@ use Symfony\Component\Mime\Email;
 class NewsletterService
 {
     public function __construct(
-        private MailerInterface $mailer
+        private MailerInterface $mailer,
+        private string $adminEmail
     ) {
     }
 
     public function sendConfirmation(NewsletterEmail $newsletterEmail): void
     {
         $email = (new Email())
-            ->from('admin@hb-corp.com')
+            ->from($this->adminEmail)
             ->to($newsletterEmail->getEmail())
             ->subject('HB Corp - Inscription à la newsletter')
             ->text('Votre inscription a bien été enregistrée')
