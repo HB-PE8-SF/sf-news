@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Article;
 use App\Form\ArticleType;
 use App\Repository\ArticleRepository;
+use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -30,6 +31,7 @@ class ArticleCrudController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $article->setCreatedAt(new DateTime());
             $entityManager->persist($article);
             $entityManager->flush();
 
@@ -51,8 +53,11 @@ class ArticleCrudController extends AbstractController
     }
 
     #[Route('/{id}/edit', name: 'app_article_crud_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Article $article, EntityManagerInterface $entityManager): Response
-    {
+    public function edit(
+        Request $request,
+        Article $article,
+        EntityManagerInterface $entityManager
+    ): Response {
         $form = $this->createForm(ArticleType::class, $article);
         $form->handleRequest($request);
 
