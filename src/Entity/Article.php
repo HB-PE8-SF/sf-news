@@ -5,6 +5,9 @@ namespace App\Entity;
 use App\Repository\ArticleRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Attribute\Context;
+use Symfony\Component\Serializer\Attribute\Groups;
+use Symfony\Component\Serializer\Normalizer\DateTimeNormalizer;
 
 #[ORM\Entity(repositoryClass: ArticleRepository::class)]
 class Article
@@ -12,21 +15,27 @@ class Article
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['articles:read'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['articles:read'])]
     private ?string $title = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $content = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[Groups(['articles:read'])]
+    #[Context([DateTimeNormalizer::FORMAT_KEY => "d/m/Y"])]
     private ?\DateTimeInterface $createdAt = null;
 
     #[ORM\Column]
+    #[Groups(['articles:read'])]
     private ?bool $visible = null;
 
     #[ORM\ManyToOne(inversedBy: 'articles')]
+    #[Groups(['articles:read'])]
     private ?Category $category = null;
 
     public function getId(): ?int
