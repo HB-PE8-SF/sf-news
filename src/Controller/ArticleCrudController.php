@@ -3,14 +3,18 @@
 namespace App\Controller;
 
 use App\Entity\Article;
+use App\Entity\ArticleImage;
 use App\Form\ArticleType;
 use App\Repository\ArticleRepository;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\FormError;
+use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\String\Slugger\SluggerInterface;
 
 #[Route('/article/crud')]
 class ArticleCrudController extends AbstractController
@@ -24,18 +28,67 @@ class ArticleCrudController extends AbstractController
     }
 
     #[Route('/new', name: 'app_article_crud_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
-    {
+    public function new(
+        Request $request,
+        EntityManagerInterface $entityManager,
+        SluggerInterface $slugger
+    ): Response {
         $article = new Article();
         $form = $this->createForm(ArticleType::class, $article);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $article->setCreatedAt(new DateTime());
-            $entityManager->persist($article);
-            $entityManager->flush();
+            // Upload
+            /** @var \Symfony\Component\HttpFoundation\File\UploadedFile $coverImage */
+            $coverImage = $form->get('coverFile')->getData();
+            $images = $form->get('article_images')->getData();
 
-            return $this->redirectToRoute('app_article_crud_index', [], Response::HTTP_SEE_OTHER);
+            if (!empty($images)) {
+                foreach ($images as $image) {
+                    $originalFilename = pathinfo($image->getClientOriginalName(), PATHINFO_FILENAME);
+
+                    $safeFilename = $slugger->slug($originalFilename);
+                    $filename = $safeFilename . '-' . uniqid() . '.' . $image->guessExtension();
+
+                    try {
+                        $image->move(
+                            'uploads/articles',
+                            $filename
+                        );
+                        $imageObject = new ArticleImage();
+                        $imageObject
+                            ->setArticle($article)
+                            ->setFilename($filename);
+
+                        $entityManager->persist($imageObject);
+                    } catch (FileException $e) {
+                        $form->addError(new FormError("Erreur lors de l'upload"));
+                    }
+                }
+            }
+
+            if ($coverImage) {
+                $originalFilename = pathinfo($coverImage->getClientOriginalName(), PATHINFO_FILENAME);
+
+                $safeFilename = $slugger->slug($originalFilename);
+                $filename = $safeFilename . '-' . uniqid() . '.' . $coverImage->guessExtension();
+
+                try {
+                    $coverImage->move(
+                        'uploads/articles',
+                        $filename
+                    );
+                    $article
+                        ->setCover($filename)
+                        ->setCreatedAt(new DateTime());
+                    $entityManager->persist($article);
+                    $entityManager->flush();
+
+                    return $this->redirectToRoute('app_article_crud_index', [], Response::HTTP_SEE_OTHER);
+                } catch (FileException $e) {
+                    $form->addError(new FormError("Erreur lors de l'upload du fichier"));
+                }
+            }
         }
 
         return $this->render('article_crud/new.html.twig', [

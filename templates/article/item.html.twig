@@ -1,0 +1,29 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+  {{ article.title }}
+{% endblock %}
+
+{% block body %}
+  <h1 class="text-center text-5xl">{{ article.title }}</h1>
+
+  <div class="mx-auto max-w-[1000px]">
+    {% if article.cover is not null %}
+      <div class="flex justify-center my-12">
+        <img src="/uploads/articles/{{ article.cover }}" alt="{{ article.title }}" />
+      </div>
+    {% else %}
+      {# Image par défaut #}
+    {% endif %}
+
+    <div>{{ article.content }}</div>
+
+    {% if article.images is not empty %}
+      {% for image in article.images %}
+        <div>
+          <img src="/uploads/articles/{{ image.filename }}" alt="{{ image.filename }}" />
+        </div>
+      {% endfor %}
+    {% endif %}
+  </div>
+{% endblock %}
