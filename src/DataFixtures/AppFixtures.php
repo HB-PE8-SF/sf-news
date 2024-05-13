@@ -4,15 +4,22 @@ namespace App\DataFixtures;
 
 use App\Entity\Article;
 use App\Entity\Category;
+use App\Entity\User;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 use Faker\Factory;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class AppFixtures extends Fixture
 {
     private const NB_ARTICLES = 50;
 
     private const CATEGORIES = ['Front-end', 'Back-end', 'Full-Stack', 'Framework', 'API', 'DevOps'];
+
+    public function __construct(
+        private UserPasswordHasherInterface $hasher
+    ) {
+    }
 
     public function load(ObjectManager $manager): void
     {
@@ -37,6 +44,22 @@ class AppFixtures extends Fixture
 
             $manager->persist($article);
         }
+
+        $user = new User();
+        $user
+            ->setEmail("user@test.com")
+            ->setPassword($this->hasher->hashPassword($user, "user1234"));
+
+        $manager->persist($user);
+
+        $admin = new User();
+
+        $admin
+            ->setEmail("admin@test.com")
+            ->setRoles(["ROLE_ADMIN"])
+            ->setPassword($this->hasher->hashPassword($admin, "admin1234"));
+
+        $manager->persist($admin);
 
         $manager->flush();
     }
