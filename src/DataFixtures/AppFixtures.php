@@ -34,7 +34,8 @@ class AppFixtures extends Fixture
                 ->setContent($faker->realTextBetween(500, 700))
                 ->setVisible($faker->boolean(80))
                 ->setCreatedAt($faker->dateTimeBetween('-2 years'))
-                ->setCategory($faker->randomElement($categories));
+                ->setCategory($faker->randomElement($categories))
+                ->setCover('default.jpg');
 
             $manager->persist($article);
         }
