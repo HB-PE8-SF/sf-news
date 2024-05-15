@@ -13,8 +13,16 @@ class ApiController extends AbstractController
     #[Route('/articles', name: 'articles')]
     public function articles(ArticleRepository $articleRepository): Response
     {
+        /** @var \App\Entity\ApiToken $user */
+        $user = $this->getUser();
+
         return $this->json(
-            $articleRepository->findAll(),
+            [
+                'user' => [
+                    'name' => $user->getName()
+                ],
+                'articles' => $articleRepository->findAll()
+            ],
             context: ['groups' => 'articles:read']
         );
     }

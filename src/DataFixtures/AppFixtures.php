@@ -2,6 +2,7 @@
 
 namespace App\DataFixtures;
 
+use App\Entity\ApiToken;
 use App\Entity\Article;
 use App\Entity\Category;
 use App\Entity\User;
@@ -64,6 +65,13 @@ class AppFixtures extends Fixture
             ->setPassword("admin1234");
 
         $manager->persist($admin);
+
+        $apiToken = new ApiToken();
+        $apiToken
+            ->setName("Trevor Baldwin")
+            ->setToken("jJcXeSWnU2WdzT7sQugHSwGiIsKWe4O3");
+
+        $manager->persist($apiToken);
 
         $manager->flush();
     }
