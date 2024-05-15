@@ -5,9 +5,11 @@
 {% endblock %}
 
 {% block body %}
-  <h1>{{ category.name }}</h1>
+  <h1 class="text-center text-5xl mb-12">{{ category.name }}</h1>
 
-  {% for article in category.articles %}
-    <p>{{ article.title }}</p>
-  {% endfor %}
+  <div class="grid grid-cols-1 md:grid-cols-2 justify-center gap-8 mb-16">
+    {% for article in category.articles %}
+      {{ include('article/card.html.twig', { article: article }) }}
+    {% endfor %}
+  </div>
 {% endblock %}
