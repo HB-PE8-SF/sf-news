@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Repository\ArticleRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -9,13 +10,10 @@ use Symfony\Component\Routing\Attribute\Route;
 class IndexController extends AbstractController
 {
     #[Route('/', name: 'app_homepage')]
-    public function index(): Response
+    public function index(ArticleRepository $articleRepository): Response
     {
-        $students = ['Amélie', 'Alex'];
-
         return $this->render('index/index.html.twig', [
-            'students' => $students,
-            'welcome_text' => 'Bonjour Monsieur !',
+            'articles' => $articleRepository->findRecent()
         ]);
     }
 

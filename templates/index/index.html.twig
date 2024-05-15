@@ -5,30 +5,13 @@
 {% endblock %}
 
 {% block body %}
-  <div class="example-wrapper">
-    <h1>{{ welcome_text }} ✅</h1>
+  <h1 class="text-center text-5xl mb-8">HB News</h1>
 
-    <p>{{ students|length }} étudiants</p>
+  <h2 class="text-center text-3xl mb-12">Nos deniers articles</h2>
 
-    <div>{{ students|join(', ') }}</div>
-
-    <div>
-      {% for student in students %}
-        <p>{{ student }}</p>
-      {% else %}
-        <p>Aucun étudiant trouvé</p>
-      {% endfor %}
-    </div>
-
-    <div>
-      This friendly message is coming from:<ul>
-        <li>
-          Your controller at <code>/home/lucas/symfony/hb_pe8_sf_news/src/Controller/IndexController.php</code>
-        </li>
-        <li>
-          Your template at <code>/home/lucas/symfony/hb_pe8_sf_news/templates/index/index.html.twig</code>
-        </li>
-      </ul>
-    </div>
+  <div class="grid grid-cols-1 md:grid-cols-2 justify-center gap-8 mb-20">
+    {% for article in articles %}
+      {{ include('article/card.html.twig', { article: article }) }}
+    {% endfor %}
   </div>
 {% endblock %}

@@ -14,6 +14,8 @@ use Symfony\Component\Serializer\Normalizer\DateTimeNormalizer;
 #[ORM\Entity(repositoryClass: ArticleRepository::class)]
 class Article
 {
+    public const HOME_ARTICLES_NUMBER = 10;
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
