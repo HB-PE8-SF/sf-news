@@ -13,16 +13,25 @@ class AppFixtures extends Fixture
 {
     private const NB_ARTICLES = 50;
 
-    private const CATEGORIES = ['Front-end', 'Back-end', 'Full-Stack', 'Framework', 'API', 'DevOps'];
+    private const CATEGORIES = [
+        'Front-end'  => '💄',
+        'Back-end'   => '🖥️',
+        'Full-Stack' => '👑',
+        'Framework'  => '❇️',
+        'API'        => '🔌',
+        'DevOps'     => '🧬'
+    ];
 
     public function load(ObjectManager $manager): void
     {
         $faker = Factory::create('fr_FR');
         $categories = [];
 
-        foreach (self::CATEGORIES as $categoryName) {
+        foreach (self::CATEGORIES as $categoryName => $categoryEmoji) {
             $category = new Category();
-            $category->setName($categoryName);
+            $category
+                ->setName($categoryName)
+                ->setEmoji($categoryEmoji);
             $manager->persist($category);
             $categories[] = $category;
         }

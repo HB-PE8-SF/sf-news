@@ -27,6 +27,9 @@ class Category
     #[ORM\OneToMany(targetEntity: Article::class, mappedBy: 'category')]
     private Collection $articles;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $emoji = null;
+
     public function __construct()
     {
         $this->articles = new ArrayCollection();
@@ -75,6 +78,18 @@ class Category
                 $article->setCategory(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getEmoji(): ?string
+    {
+        return $this->emoji;
+    }
+
+    public function setEmoji(?string $emoji): static
+    {
+        $this->emoji = $emoji;
 
         return $this;
     }
