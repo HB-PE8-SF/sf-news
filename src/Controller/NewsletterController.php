@@ -5,7 +5,6 @@ namespace App\Controller;
 use App\Entity\NewsletterEmail;
 use App\Event\NewsletterRegisteredEvent;
 use App\Form\NewsletterType;
-use App\Mail\NewsletterService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
@@ -27,6 +26,7 @@ class NewsletterController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            // Check spam
             $em->persist($newsletterEmail);
             $em->flush();
 
