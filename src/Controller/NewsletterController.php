@@ -26,7 +26,6 @@ class NewsletterController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            // Check spam
             $em->persist($newsletterEmail);
             $em->flush();
 
